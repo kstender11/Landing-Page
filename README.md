@@ -1,4 +1,4 @@
-# Clubview Landing + API
+# fomo Landing + API
 
 ## Local dev
 1. Create `.env.local` at project root with:
