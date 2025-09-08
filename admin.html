@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Clubview Admin</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 24px; }
+    h1 { margin: 0 0 16px; }
+    .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
+    input, button { padding: 8px 10px; border-radius: 8px; border: 1px solid #ddd; }
+    button { cursor: pointer; }
+    table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+    th, td { padding: 8px 10px; border-bottom: 1px solid #eee; font-size: 14px; text-align: left; }
+    th { background: #fafafa; position: sticky; top: 0; }
+    .muted { color: #666; }
+    .pill { padding: 2px 8px; border-radius: 999px; background: #f2f4f7; font-size: 12px; }
+    .right { margin-left: auto; }
+    .warn { color: #b42318; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h1>Clubview Admin</h1>
+  <div class="row">
+    <input id="token" type="password" placeholder="Admin token" />
+    <button id="saveToken">Save Token</button>
+    <input id="search" type="text" placeholder="Filter by name/email/referral code..." class="right" />
+    <button id="refresh">Refresh</button>
+    <button id="export">Export CSV</button>
+  </div>
+
+  <div id="stats" class="muted">Loading stats…</div>
+
+  <table id="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>City</th>
+        <th>ReferralCode</th>
+        <th>ReferredBy</th>
+        <th>ReferralCount</th>
+        <th>Created</th>
+        <th>Source</th>
+      </tr>
+    </thead>
+    <tbody id="tbody">
+      <tr><td colspan="8" class="muted">Loading…</td></tr>
+    </tbody>
+  </table>
+
+  <script src="./admin.js"></script>
+</body>
+</html>

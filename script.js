@@ -21,19 +21,19 @@ function animateCounter(id, target) {
 window.addEventListener("DOMContentLoaded", () => {
   animateCounter("usersCount", users);
   animateCounter("venuesCount", venues);
-  // Safe if these extra ids exist on the page:
   animateCounter("venue-count", venues);
   animateCounter("user-count", users);
 });
 
-// --- Waitlist form -> backend ---
+// --- Waitlist form -> backend (with referrals) ---
 window.addEventListener("DOMContentLoaded", () => {
   const form      = document.getElementById("waitlist-form");
   const success   = document.getElementById("success");
   const shareLink = document.getElementById("share-link");
   const copyBtn   = document.getElementById("copy-btn");
   const queueCopy = document.getElementById("queue-copy");
-  const API       = "/api/subscribe"; // same Vercel project → relative path
+  const API       = "/api/subscribe"; // same project → relative
+  const REF_FROM_URL = new URLSearchParams(location.search).get("ref") || null;
 
   if (!form) return;
 
@@ -67,7 +67,8 @@ window.addEventListener("DOMContentLoaded", () => {
           lastName,
           name: `${firstName} ${lastName}`,
           cityPreference: city,
-          source: "waitlist"
+          source: "waitlist",
+          referrerCode: REF_FROM_URL || undefined
         })
       });
 
@@ -76,9 +77,10 @@ window.addEventListener("DOMContentLoaded", () => {
 
       const inserted       = !!data.inserted;
       const alreadyExisted = !!data.alreadyExisted;
+      const myCode         = data.referralCode || null;
 
-      // UI (same look/feel)
-      const ref = Math.random().toString(36).substring(2, 8);
+      // UI (same look/feel), using *real* referral code from server:
+      const ref = myCode || Math.random().toString(36).substring(2, 8);
       form.classList.add("hidden");
       success.classList.remove("hidden");
       queueCopy.textContent = inserted
