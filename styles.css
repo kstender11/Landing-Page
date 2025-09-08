@@ -1,247 +1,356 @@
+/* =========================
+   Fomo / Clubview — styles.css (full)
+   Mobile-first, iOS-polished, no layout changes to your HTML
+   ========================= */
+
+/* ----- Theme tokens ----- */
 :root {
-    --bg: #0c0c0c;
-    --text: #f5f5f5;
-    --muted: #b3b3b3;
-    --accent: #9fdde1; /* turquoise */
-  }
-  
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  
-  body {
-    font-family: system-ui, -apple-system, Segoe UI, Inter, Roboto, Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.6;
-  }
-  
-  /* ===== Navbar ===== */
-  .navbar {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px 28px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; }
-  .logo img { width: 30px; height: 30px; }
-  
-  .navbar nav { display: flex; gap: 28px; }
-  .navbar nav a { text-decoration: none; color: var(--text); font-weight: 500; opacity: .9; }
-  .navbar nav a:hover { opacity: 1; }
-  
-  .cta-nav {
-    padding: 6px 14px;
-    border: 1px solid var(--accent);
-    border-radius: 999px;
-    color: var(--accent);
-  }
-  
-  /* ===== Hero (centered) ===== */
-  .hero {
-    max-width: 980px;             /* slightly narrower so it centers nicely */
-    margin: 120px auto 56px;      /* centered block */
-    padding: 0 28px;
-    text-align: center;           /* center text + children */
-  }
-  
-  .hero h1 {
-    font-size: 3.2rem;
-    font-weight: 800;
-    margin-bottom: 16px;
-  }
-  
-  .hero p { color: var(--muted); margin-bottom: 22px; }
-  
-  .badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 14px;
-    justify-content: center;      /* center chips */
-    margin-bottom: 26px;
-  }
-  
-  .badges span {
-    padding: 9px 18px;
-    border: 1px solid #2b2b2b;
-    border-radius: 999px;
-    background: #141414;
-    font-size: .95rem;
-  }
-  
-  .cta-btn {
-    display: inline-block;
-    padding: 14px 28px;
-    background: var(--accent);
-    color: #000;
-    border-radius: 10px;
-    font-weight: 700;
-    text-decoration: none;
-    transition: transform .04s ease, opacity .2s ease;
-  }
-  .cta-btn:hover { opacity: .9; transform: translateY(-1px); }
-  
-  /* ===== Stats ===== */
-  .stats {
-    max-width: 900px;
-    margin: 64px auto 80px;
-    padding: 0 28px;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 18px;
-    text-align: center;
-  }
-  .stat h3 { font-size: 2.6rem; font-weight: 800; color: var(--accent); }
-  .stat p  { margin-top: 6px; font-size: 1.05rem; color: var(--muted); }
-  
-  /* ===== About ===== */
-  .about {
-    max-width: 800px;
-    margin: 0 auto 72px;
-    padding: 0 28px;
-    text-align: center;
-  }
-  .about h2 { font-size: 2rem; font-weight: 700; margin-bottom: 12px; }
-  
-  /* ===== Features ===== */
-  .features {
-    max-width: 1000px;
-    margin: 0 auto 80px;
-    padding: 0 28px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-  }
-  .feature { background: #141414; padding: 28px; border-radius: 12px; }
-  .feature h3 { font-size: 1.35rem; margin-bottom: 8px; }
-  
-  /* ===== Waitlist ===== */
-  .waitlist {
-    max-width: 640px;
-    margin: 0 auto 80px;
-    padding: 0 28px;
-    text-align: center;
-  }
-  .waitlist form {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    margin-top: 18px;
-  }
-  .waitlist input,
-.waitlist select {
-  padding: 14px;
-  border-radius: 8px;
-  border: 1px solid #2b2b2b;
-  background: #141414;
+  --bg: #0b0d10;
+  --bg-2: #12161c;
+  --card: #12161c;
+  --border: #1f242c;
+  --text: #e9eef2;
+  --muted: #a6b0bd;
+  --link: #cfe6ff;
+  --accent: #9be7e3;         /* CTA teal */
+  --accent-2: #79d5cf;
+  --badge-bg: #1a222b;
+  --badge-br: #27303a;
+  --shadow: 0 8px 30px rgba(0,0,0,.35);
+  --radius: 16px;
+}
+
+/* Prevent iOS auto-zoom on inputs; consistent text sizing */
+html { -webkit-text-size-adjust: 100%; }
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+               Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
   color: var(--text);
-  font-size: 1rem;
+  background: radial-gradient(1000px 600px at 20% -10%, #12202a 0%, #0b0d10 45%) fixed,
+              var(--bg);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* iOS safe-area for notch/home indicator */
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
-.waitlist input::placeholder {
-  color: #777;
+/* Optional wrapper utility (not required by your HTML) */
+.container {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
-.waitlist button {
-  margin-top: 8px;
-}
+/* Links */
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
 
-/* Success share row */
-.share-row {
-  margin-top: 14px;
-  display: flex;
-  gap: 10px;
+/* Utils */
+.hidden { display: none !important; }
+.center { text-align: center; }
+
+/* Buttons / CTAs */
+button, .cta-btn, .cta-nav {
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
+  gap: .5rem;
+  cursor: pointer;
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 18px;
+  min-height: 48px;                   /* ≥44px tap target for iOS */
+  font-weight: 600;
+  color: #081417;
+  background: var(--accent);
+  transition: transform .06s ease, filter .15s ease, background .15s ease;
+}
+button:hover, .cta-btn:hover, .cta-nav:hover {
+  background: var(--accent-2);
+  text-decoration: none;
+}
+button:active, .cta-btn:active, .cta-nav:active {
+  transform: translateY(1px);
+}
+
+/* ===== Header / Navbar ===== */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  width: 100%;
+  backdrop-filter: saturate(180%) blur(16px);
+  -webkit-backdrop-filter: saturate(180%) blur(16px);
+  background: rgba(11,13,16,.5);
+  border-bottom: 1px solid var(--border);
+
+  /* Works with your current HTML (no .container wrapper required) */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text);
+  font-weight: 700;
+  letter-spacing: .2px;
+}
+.logo img { width: 28px; height: 28px; display: block; }
+.logo span { font-size: 18px; }
+
+.navbar nav {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.navbar nav a {
+  color: var(--muted);
+  padding: 6px 6px;
+  border-radius: 8px;
+}
+.navbar nav a:hover { color: var(--text); }
+.navbar .cta-nav {
+  color: #081417;
+  background: var(--accent);
+  padding: 10px 14px;
+}
+
+/* ===== Hero ===== */
+.hero {
+  text-align: center;
+  padding: 72px 20px 48px;
+  min-height: 60svh; /* more stable than 60vh on iOS */
+  display: grid;
+  place-items: center;
+}
+.hero h1 {
+  margin: 0 0 12px;
+  font-size: clamp(30px, 7.2vw, 64px);
+  line-height: 1.06;
+  letter-spacing: -0.5px;
+}
+.hero p {
+  margin: 0 auto 16px;
+  max-width: 680px;
+  color: var(--muted);
+  font-size: clamp(14px, 3.6vw, 18px);
+}
+
+/* Badges */
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin: 12px 0 18px;
+}
+.badges span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--badge-bg);
+  border: 1px solid var(--badge-br);
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.hero .cta-btn {
+  margin-top: 8px;
+  width: 100%;
+  max-width: 360px;
+}
+
+/* ===== Stats ===== */
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  padding: 10px 20px 32px;
+  max-width: 780px;
+  margin: 0 auto;
+  text-align: center;
+}
+.stats h3 {
+  margin: 0;
+  font-size: clamp(24px, 6vw, 36px);
+}
+.stats p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* ===== Sections ===== */
+section { margin: 0 auto; }
+.about, .features, .waitlist, .faq { padding: 48px 0; }
+.about p { color: var(--muted); max-width: 800px; margin: 8px auto 0; }
+
+/* ===== Features ===== */
+.features {
+  display: grid;
+  gap: 18px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+@media (min-width: 820px) {
+  .features { grid-template-columns: repeat(3, minmax(0,1fr)); }
+}
+.feature {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 18px 20px;
+  box-shadow: var(--shadow);
+}
+.feature h3 { margin: 0 0 6px; }
+.feature p { margin: 0; color: var(--muted); }
+
+/* ===== Waitlist ===== */
+.waitlist { text-align: center; }
+.waitlist p { color: var(--muted); }
+
+.waitlist form#waitlist-form {
+  margin: 16px auto 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  max-width: 560px;
+  padding: 0 20px;
+}
+.waitlist input,
+.waitlist select {
+  width: 100%;
+  height: 48px;                 /* iOS-friendly height */
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg-2);
+  color: var(--text);
+  padding: 12px 14px;
+  font-size: 16px;              /* ≥16px prevents Safari zoom */
+  outline: none;
+}
+.waitlist input:focus,
+.waitlist select:focus {
+  border-color: var(--accent-2);
+  box-shadow: 0 0 0 3px rgba(123,213,207,.25);
+}
+.waitlist .cta-btn { width: 100%; }
+
+/* Success state */
+#success {
+  max-width: 640px;
+  margin: 18px auto 0;
+  padding: 16px 20px 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+#queue-copy { margin: 0 0 12px; }
+
+.share-row {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
 }
 .share-row input {
   flex: 1;
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid #2b2b2b;
-  background: #141414;
+  min-width: 0;                 /* avoid overflow on iOS */
+  height: 46px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg-2);
   color: var(--text);
+  padding: 10px 12px;
+  font-size: 16px;
 }
-.share-row button {
-  padding: 12px 18px;
-  background: var(--accent);
-  color: #000;
-  font-weight: 600;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-.share-row button:hover {
-  opacity: .9;
-}
+#copy-btn { white-space: nowrap; }
 
 /* ===== FAQ ===== */
 .faq {
-  max-width: 700px;
-  margin: 0 auto 100px;
-  padding: 0 28px;
-}
-.faq h2 {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 18px;
+  max-width: 820px;
+  margin: 0 auto;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 .faq details {
-  background: #141414;
-  border-radius: 10px;
-  margin-bottom: 14px;
-  padding: 14px 18px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin: 10px 0;
 }
 .faq summary {
   cursor: pointer;
   font-weight: 600;
   list-style: none;
 }
-.faq p {
-  margin-top: 10px;
-  color: var(--muted);
-}
+.faq summary::-webkit-details-marker { display: none; }
+.faq p { color: var(--muted); margin: 8px 0 0; }
 
 /* ===== Footer ===== */
 .footer {
-  border-top: 1px solid #2b2b2b;
-  padding: 24px 28px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-.footer p {
-  font-size: 0.9rem;
+  border-top: 1px solid var(--border);
   color: var(--muted);
+  text-align: center;
+  padding: 28px 16px;
 }
-.footer-links {
+.footer .footer-links {
   display: flex;
-  gap: 20px;
-}
-.footer-links a {
-  color: var(--text);
-  text-decoration: none;
-  font-size: 0.9rem;
-  opacity: .8;
-}
-.footer-links a:hover {
-  opacity: 1;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 8px;
 }
 
-/* ===== Utility ===== */
-.hidden {
-  display: none;
+/* ===== Headings defaults ===== */
+h2 {
+  text-align: center;
+  margin: 0 0 8px;
+  font-size: clamp(22px, 4.8vw, 32px);
 }
 
-/* Responsive tweaks */
-@media (max-width: 768px) {
-  .hero h1 {
-    font-size: 2.3rem;
-  }
-  .stats {
-    grid-template-columns: 1fr;
-    gap: 28px;
-  }
+/* ===== Small screens polish ===== */
+@media (max-width: 740px) {
+  .navbar { padding: 10px 16px; }
+  .navbar nav { gap: 12px; }
+
+  .hero { padding: 56px 16px 36px; }
+  .badges { margin: 10px 0 16px; }
+
+  .stats { padding: 0 16px 28px; gap: 14px; }
+
+  .features { padding-left: 16px; padding-right: 16px; }
+  .about, .waitlist, .faq { padding: 40px 0; }
+}
+
+/* Tiny devices */
+@media (max-width: 380px) {
+  .hero h1 { font-size: clamp(26px, 7vw, 44px); }
+  .navbar nav { gap: 10px; }
+}
+
+/* ===== Reduced motion ===== */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
 }
