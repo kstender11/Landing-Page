@@ -1,74 +1,53 @@
-// /api/subscribe.js
-// Saves { email, source?, cityPreference? } to MongoDB (DB: "fomo", coll: "subscribers")
-
-require("dotenv").config();
+// api/subscribe.js
 const { MongoClient } = require("mongodb");
 
-let cached = { client: null, col: null };
+const uri = process.env.MONGODB_URI;
+if (!uri) {
+  throw new Error("Missing MONGODB_URI");
+}
 
-function setCORS(req, res) {
-  const allow = (process.env.ALLOWED_ORIGIN || "")
-    .split(",")
-    .map(s => s.trim())
-    .filter(Boolean);
-  const origin = req.headers.origin;
-  if (origin && allow.includes(origin)) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-    res.setHeader("Vary", "Origin");
+let client;
+let clientPromise;
+function getClient() {
+  if (!clientPromise) {
+    client = new MongoClient(uri);
+    clientPromise = client.connect();
   }
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  return clientPromise;
 }
 
-async function getCollection() {
-  if (cached.col) return cached.col;
-  if (!process.env.MONGODB_URI) throw new Error("Missing MONGODB_URI");
-
-  const client = new MongoClient(process.env.MONGODB_URI);
-  await client.connect();
-
-  const col = client.db("fomo").collection("subscribers");
-  await col.createIndex({ email: 1 }, { unique: true }); // prevent duplicates
-
-  cached.client = client;
-  cached.col = col;
-  return col;
-}
-
-module.exports = async (req, res) => {
-  setCORS(req, res);
-  if (req.method === "OPTIONS") return res.status(200).end();
+module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ ok: false, error: "Method not allowed" });
   }
 
   try {
-    const body =
-      typeof req.body === "string" ? JSON.parse(req.body || "{}") : (req.body || {});
-    const email = String(body.email || "").toLowerCase().trim();
-    const source = body.source || "landing";
-    const cityPreference = body.cityPreference;
+    const { email, name, cityPreference, source = "waitlist" } = req.body || {};
+    const e = String(email || "").toLowerCase().trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) {
+      return res.status(400).json({ ok: false, error: "Invalid email" });
+    }
 
-    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    if (!valid) return res.status(400).json({ ok: false, error: "Invalid email" });
-
-    const col = await getCollection();
+    const db = (await getClient()).db("fomo");
+    const col = db.collection("subscribers");
+    await col.createIndex({ email: 1 }, { unique: true });
 
     const r = await col.updateOne(
-      { email },
-      { $setOnInsert: { email, createdAt: new Date() },
-        $set: { source, cityPreference } },
+      { email: e },
+      {
+        $setOnInsert: { email: e, createdAt: new Date() },
+        $set: { name, cityPreference, source },
+      },
       { upsert: true }
     );
 
-    const alreadyExisted = r.upsertedCount === 0;
-    return res.status(200).json({ ok: true, alreadyExisted });
+    return res.json({ ok: true, alreadyExisted: r.upsertedCount === 0 });
   } catch (err) {
     if (err && err.code === 11000) {
-      // duplicate key
-      return res.status(200).json({ ok: true, alreadyExisted: true });
+      return res.json({ ok: true, alreadyExisted: true });
     }
-    console.error(err);
-    return res.status(500).json({ ok: false, error: "Server error" });
+    console.error("Subscribe error:", err);
+    // Surface the real error during debugging only:
+    return res.status(500).json({ ok: false, error: err.message || "Server error" });
   }
 };
