@@ -4,15 +4,28 @@ const { MongoClient } = require("mongodb");
 const uri = process.env.MONGODB_URI;
 if (!uri) throw new Error("Missing MONGODB_URI");
 
-// Reuse the client across invocations
-let client;
-let clientPromise;
-function getClient() {
+// Reuse client across invocations
+let client, clientPromise, indexEnsured = false;
+
+async function getCollection() {
   if (!clientPromise) {
     client = new MongoClient(uri);
     clientPromise = client.connect();
   }
-  return clientPromise;
+  const conn = await clientPromise;
+  const col = conn.db("fomo").collection("subscribers");
+
+  // Try to ensure unique index once; ignore duplicate-data/index-conflict errors
+  if (!indexEnsured) {
+    try {
+      await col.createIndex({ email: 1 }, { unique: true, name: "uniq_email" });
+    } catch (e) {
+      // 11000: duplicates exist; 85: index options conflict; both can be ignored
+      if (e.code !== 11000 && e.code !== 85) console.error("Index create error:", e);
+    }
+    indexEnsured = true;
+  }
+  return col;
 }
 
 module.exports = async function handler(req, res) {
@@ -27,11 +40,7 @@ module.exports = async function handler(req, res) {
       return res.status(400).json({ ok: false, error: "Invalid email" });
     }
 
-    const db = (await getClient()).db("fomo");
-    const col = db.collection("subscribers");
-
-    // Ensure unique index on email
-    await col.createIndex({ email: 1 }, { unique: true });
+    const col = await getCollection();
 
     const result = await col.updateOne(
       { email: e },
@@ -42,22 +51,17 @@ module.exports = async function handler(req, res) {
       { upsert: true }
     );
 
-    // With modern driver, check upsertedId to know if an insert happened
     const inserted = !!result.upsertedId;
-
     return res.json({
       ok: true,
       inserted,
       alreadyExisted: !inserted,
-      // helpful debug (remove later if you want)
-      upsertedId: result.upsertedId ?? null,
-      matchedCount: result.matchedCount,
-      modifiedCount: result.modifiedCount
+      upsertedId: result.upsertedId ?? null
     });
   } catch (err) {
     if (err && err.code === 11000) {
-      // Duplicate key – record exists
-      return res.json({ ok: true, inserted: false, alreadyExisted: true, dup: true });
+      // true duplicate of *this* email
+      return res.json({ ok: true, inserted: false, alreadyExisted: true, reason: "dup-key" });
     }
     console.error("Subscribe error:", err);
     return res.status(500).json({ ok: false, error: err.message || "Server error" });

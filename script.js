@@ -21,7 +21,8 @@ function animateCounter(id, target) {
 window.addEventListener("DOMContentLoaded", () => {
   animateCounter("usersCount", users);
   animateCounter("venuesCount", venues);
-  animateCounter("venue-count", venues); // safe if those ids exist
+  // Safe if these extra ids exist on the page:
+  animateCounter("venue-count", venues);
   animateCounter("user-count", users);
 });
 
@@ -32,7 +33,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const shareLink = document.getElementById("share-link");
   const copyBtn   = document.getElementById("copy-btn");
   const queueCopy = document.getElementById("queue-copy");
-  const API       = "/api/subscribe"; // same project → relative path
+  const API       = "/api/subscribe"; // same Vercel project → relative path
 
   if (!form) return;
 
@@ -49,36 +50,41 @@ window.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    submitBtn && (submitBtn.disabled = true);
+    if (submitBtn) submitBtn.disabled = true;
 
     try {
       // Send to your serverless API (saves to MongoDB)
       const res = await fetch(API, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        // `source` & `cityPreference` match the API you deployed
-        body: JSON.stringify({ email, source: "waitlist", cityPreference: city, name })
+        body: JSON.stringify({ email, name, cityPreference: city, source: "waitlist" })
       });
 
       const data = await res.json().catch(() => ({}));
-
       if (!res.ok || !data.ok) {
         throw new Error(data.error || "Request failed");
       }
+
+      // Decide message from API truth
+      const inserted       = !!data.inserted;              // first time
+      const alreadyExisted = !!data.alreadyExisted;        // repeat sign-up
 
       // --- UI success (unchanged look/feel) ---
       const ref = Math.random().toString(36).substring(2, 8);
       form.classList.add("hidden");
       success.classList.remove("hidden");
-      queueCopy.textContent = data.alreadyExisted
-        ? `You’re already on the list, ${name || "friend"}! Share your link to climb the waitlist.`
-        : `You’re on the list, ${name || "friend"}! Share your link to climb the waitlist.`;
+      queueCopy.textContent = inserted
+        ? `You’re on the list, ${name || "friend"}! Share your link to climb the waitlist.`
+        : `You’re already on the list, ${name || "friend"}! Share your link to climb the waitlist.`;
       shareLink.value = `${window.location.origin}?ref=${ref}`;
+
+      // (Optional) debug in console
+      console.log("Subscribe response:", data);
     } catch (err) {
       console.error("Subscribe error:", err);
       alert("Sorry, something went wrong adding you to the waitlist. Please try again.");
     } finally {
-      submitBtn && (submitBtn.disabled = false);
+      if (submitBtn) submitBtn.disabled = false;
     }
   });
 
