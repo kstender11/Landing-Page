@@ -40,45 +40,52 @@ window.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const email = document.getElementById("email").value.trim();
-    const name  = (document.getElementById("name")?.value || "").trim();
-    const city  = (document.getElementById("city")?.value || "").trim();
+    const email     = document.getElementById("email").value.trim();
+    const firstName = (document.getElementById("firstName")?.value || "").trim();
+    const lastName  = (document.getElementById("lastName")?.value || "").trim();
+    const city      = (document.getElementById("city")?.value || "").trim();
     const submitBtn = form.querySelector('button[type="submit"]');
 
     if (!email) {
       alert("Please enter an email.");
       return;
     }
+    if (!firstName || !lastName) {
+      alert("Please enter your first and last name.");
+      return;
+    }
 
     if (submitBtn) submitBtn.disabled = true;
 
     try {
-      // Send to your serverless API (saves to MongoDB)
       const res = await fetch(API, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, name, cityPreference: city, source: "waitlist" })
+        body: JSON.stringify({
+          email,
+          firstName,
+          lastName,
+          name: `${firstName} ${lastName}`,
+          cityPreference: city,
+          source: "waitlist"
+        })
       });
 
       const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data.ok) {
-        throw new Error(data.error || "Request failed");
-      }
+      if (!res.ok || !data.ok) throw new Error(data.error || "Request failed");
 
-      // Decide message from API truth
-      const inserted       = !!data.inserted;              // first time
-      const alreadyExisted = !!data.alreadyExisted;        // repeat sign-up
+      const inserted       = !!data.inserted;
+      const alreadyExisted = !!data.alreadyExisted;
 
-      // --- UI success (unchanged look/feel) ---
+      // UI (same look/feel)
       const ref = Math.random().toString(36).substring(2, 8);
       form.classList.add("hidden");
       success.classList.remove("hidden");
       queueCopy.textContent = inserted
-        ? `You’re on the list, ${name || "friend"}! Share your link to climb the waitlist.`
-        : `You’re already on the list, ${name || "friend"}! Share your link to climb the waitlist.`;
+        ? `You’re on the list, ${firstName}! Share your link to climb the waitlist.`
+        : `You’re already on the list, ${firstName}! Share your link to climb the waitlist.`;
       shareLink.value = `${window.location.origin}?ref=${ref}`;
 
-      // (Optional) debug in console
       console.log("Subscribe response:", data);
     } catch (err) {
       console.error("Subscribe error:", err);

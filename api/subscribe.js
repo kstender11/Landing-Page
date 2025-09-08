@@ -4,7 +4,6 @@ const { MongoClient } = require("mongodb");
 const uri = process.env.MONGODB_URI;
 if (!uri) throw new Error("Missing MONGODB_URI");
 
-// Reuse client across invocations
 let client, clientPromise, indexEnsured = false;
 
 async function getCollection() {
@@ -15,12 +14,11 @@ async function getCollection() {
   const conn = await clientPromise;
   const col = conn.db("fomo").collection("subscribers");
 
-  // Try to ensure unique index once; ignore duplicate-data/index-conflict errors
   if (!indexEnsured) {
     try {
       await col.createIndex({ email: 1 }, { unique: true, name: "uniq_email" });
     } catch (e) {
-      // 11000: duplicates exist; 85: index options conflict; both can be ignored
+      // Ignore expected conflicts (e.g., duplicates exist or index already there)
       if (e.code !== 11000 && e.code !== 85) console.error("Index create error:", e);
     }
     indexEnsured = true;
@@ -34,19 +32,28 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const { email, name, cityPreference, source = "waitlist" } = req.body || {};
-    const e = String(email || "").toLowerCase().trim();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) {
-      return res.status(400).json({ ok: false, error: "Invalid email" });
+    const { email, firstName, lastName, cityPreference, source = "waitlist" } = req.body || {};
+    const e  = String(email || "").toLowerCase().trim();
+    const fn = String(firstName || "").trim();
+    const ln = String(lastName || "").trim();
+
+    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+    const nameRegex  = /^[a-zA-Z ,.'-]{1,60}$/; // simple, human-friendly
+    const namesValid = nameRegex.test(fn) && nameRegex.test(ln);
+
+    if (!emailValid) return res.status(400).json({ ok: false, error: "Invalid email" });
+    if (!fn || !ln || !namesValid) {
+      return res.status(400).json({ ok: false, error: "First and last name required" });
     }
 
     const col = await getCollection();
+    const name = `${fn} ${ln}`;
 
     const result = await col.updateOne(
       { email: e },
       {
         $setOnInsert: { email: e, createdAt: new Date() },
-        $set: { name, cityPreference, source }
+        $set: { firstName: fn, lastName: ln, name, cityPreference, source }
       },
       { upsert: true }
     );
@@ -60,7 +67,6 @@ module.exports = async function handler(req, res) {
     });
   } catch (err) {
     if (err && err.code === 11000) {
-      // true duplicate of *this* email
       return res.json({ ok: true, inserted: false, alreadyExisted: true, reason: "dup-key" });
     }
     console.error("Subscribe error:", err);

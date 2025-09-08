@@ -1,4 +1,4 @@
-require("dotenv").config();                 // ← loads .env in this folder
+/*require("dotenv").config();                 // ← loads .env in this folder
 const { MongoClient } = require("mongodb");
 
 const uri = process.env.MONGODB_URI;
@@ -27,3 +27,4 @@ async function run() {
   }
 }
 run();
+*/

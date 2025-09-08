@@ -49,7 +49,6 @@
       <p>Venues Listed</p>
     </div>
   </section>
-  
 
   <!-- ===== About ===== -->
   <section id="about" class="about">
@@ -84,7 +83,9 @@
 
     <form id="waitlist-form">
       <input type="email" id="email" placeholder="you@example.com" required />
-      <input type="text" id="name" placeholder="First name (optional)" />
+      <!-- changed: split into first + last, both required -->
+      <input type="text" id="firstName" placeholder="First name" required />
+      <input type="text" id="lastName" placeholder="Last name" required />
       <select id="city">
         <option>SF Bay Area</option>
         <option>Los Angeles</option>
