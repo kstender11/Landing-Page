@@ -1,0 +1,247 @@
+:root {
+    --bg: #0c0c0c;
+    --text: #f5f5f5;
+    --muted: #b3b3b3;
+    --accent: #9fdde1; /* turquoise */
+  }
+  
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    font-family: system-ui, -apple-system, Segoe UI, Inter, Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+  
+  /* ===== Navbar ===== */
+  .navbar {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+  .logo img { width: 30px; height: 30px; }
+  
+  .navbar nav { display: flex; gap: 28px; }
+  .navbar nav a { text-decoration: none; color: var(--text); font-weight: 500; opacity: .9; }
+  .navbar nav a:hover { opacity: 1; }
+  
+  .cta-nav {
+    padding: 6px 14px;
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    color: var(--accent);
+  }
+  
+  /* ===== Hero (centered) ===== */
+  .hero {
+    max-width: 980px;             /* slightly narrower so it centers nicely */
+    margin: 120px auto 56px;      /* centered block */
+    padding: 0 28px;
+    text-align: center;           /* center text + children */
+  }
+  
+  .hero h1 {
+    font-size: 3.2rem;
+    font-weight: 800;
+    margin-bottom: 16px;
+  }
+  
+  .hero p { color: var(--muted); margin-bottom: 22px; }
+  
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: center;      /* center chips */
+    margin-bottom: 26px;
+  }
+  
+  .badges span {
+    padding: 9px 18px;
+    border: 1px solid #2b2b2b;
+    border-radius: 999px;
+    background: #141414;
+    font-size: .95rem;
+  }
+  
+  .cta-btn {
+    display: inline-block;
+    padding: 14px 28px;
+    background: var(--accent);
+    color: #000;
+    border-radius: 10px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform .04s ease, opacity .2s ease;
+  }
+  .cta-btn:hover { opacity: .9; transform: translateY(-1px); }
+  
+  /* ===== Stats ===== */
+  .stats {
+    max-width: 900px;
+    margin: 64px auto 80px;
+    padding: 0 28px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    text-align: center;
+  }
+  .stat h3 { font-size: 2.6rem; font-weight: 800; color: var(--accent); }
+  .stat p  { margin-top: 6px; font-size: 1.05rem; color: var(--muted); }
+  
+  /* ===== About ===== */
+  .about {
+    max-width: 800px;
+    margin: 0 auto 72px;
+    padding: 0 28px;
+    text-align: center;
+  }
+  .about h2 { font-size: 2rem; font-weight: 700; margin-bottom: 12px; }
+  
+  /* ===== Features ===== */
+  .features {
+    max-width: 1000px;
+    margin: 0 auto 80px;
+    padding: 0 28px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .feature { background: #141414; padding: 28px; border-radius: 12px; }
+  .feature h3 { font-size: 1.35rem; margin-bottom: 8px; }
+  
+  /* ===== Waitlist ===== */
+  .waitlist {
+    max-width: 640px;
+    margin: 0 auto 80px;
+    padding: 0 28px;
+    text-align: center;
+  }
+  .waitlist form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 18px;
+  }
+  .waitlist input,
+.waitlist select {
+  padding: 14px;
+  border-radius: 8px;
+  border: 1px solid #2b2b2b;
+  background: #141414;
+  color: var(--text);
+  font-size: 1rem;
+}
+
+.waitlist input::placeholder {
+  color: #777;
+}
+
+.waitlist button {
+  margin-top: 8px;
+}
+
+/* Success share row */
+.share-row {
+  margin-top: 14px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+.share-row input {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #2b2b2b;
+  background: #141414;
+  color: var(--text);
+}
+.share-row button {
+  padding: 12px 18px;
+  background: var(--accent);
+  color: #000;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.share-row button:hover {
+  opacity: .9;
+}
+
+/* ===== FAQ ===== */
+.faq {
+  max-width: 700px;
+  margin: 0 auto 100px;
+  padding: 0 28px;
+}
+.faq h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+.faq details {
+  background: #141414;
+  border-radius: 10px;
+  margin-bottom: 14px;
+  padding: 14px 18px;
+}
+.faq summary {
+  cursor: pointer;
+  font-weight: 600;
+  list-style: none;
+}
+.faq p {
+  margin-top: 10px;
+  color: var(--muted);
+}
+
+/* ===== Footer ===== */
+.footer {
+  border-top: 1px solid #2b2b2b;
+  padding: 24px 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.footer p {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+.footer-links {
+  display: flex;
+  gap: 20px;
+}
+.footer-links a {
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.9rem;
+  opacity: .8;
+}
+.footer-links a:hover {
+  opacity: 1;
+}
+
+/* ===== Utility ===== */
+.hidden {
+  display: none;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2.3rem;
+  }
+  .stats {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+}

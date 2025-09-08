@@ -1,1 +1,0 @@
-console.log("Clubview landing page ready");

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clubview</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- ===== Header ===== -->
+  <header class="navbar">
+    <div class="logo">
+      <img src="assets/logo.png" alt="Clubview Logo" />
+      <span>Clubview</span>
+    </div>
+    <nav>
+      <a href="#about">About</a>
+      <a href="#features">Features</a>
+      <a href="#faq">FAQ</a>
+      <a href="#waitlist" class="cta-nav">Get Early Access</a>
+    </nav>
+  </header>
+
+  <!-- ===== Hero (centered) ===== -->
+  <section class="hero">
+    <h1>Find tonight’s vibe.<br>Don’t miss the party.</h1>
+    <p>
+      Live heat map of bars & clubs, real-time “busy” signals, and recs that
+      match your vibe.
+    </p>
+
+    <div class="badges">
+      <span>Invite-only</span>
+      <span>First 100 = VIP</span>
+      <span>Launching in SF • LA • NYC</span>
+    </div>
+
+    <a href="#waitlist" class="cta-btn">Get Early Access</a>
+  </section>
+
+  <!-- ===== Stats ===== -->
+  <section class="stats">
+    <div>
+      <h3 id="usersCount">0</h3>
+      <p>Users Signed Up</p>
+    </div>
+    <div>
+      <h3 id="venuesCount">0</h3>
+      <p>Venues Listed</p>
+    </div>
+  </section>
+  
+
+  <!-- ===== About ===== -->
+  <section id="about" class="about">
+    <h2>What is Clubview?</h2>
+    <p>
+      Clubview is your nightlife discovery app — see live vibes at bars and clubs,
+      find trending spots, and plan your night with friends. We make sure you
+      never walk into an empty venue again.
+    </p>
+  </section>
+
+  <!-- ===== Features ===== -->
+  <section id="features" class="features">
+    <div class="feature">
+      <h3>Trending Tonight</h3>
+      <p>See where it’s <b>Packed</b> right now with our live nightlife heat map.</p>
+    </div>
+    <div class="feature">
+      <h3>For You</h3>
+      <p>Personalized recommendations from signals + your friends’ spots.</p>
+    </div>
+    <div class="feature">
+      <h3>Plan with Friends</h3>
+      <p>Share plans, track favorites, and never split the group chat again.</p>
+    </div>
+  </section>
+
+  <!-- ===== Waitlist ===== -->
+  <section id="waitlist" class="waitlist">
+    <h2>Join the VIP waitlist</h2>
+    <p>Limited drops weekly. Refer friends to skip the line.</p>
+
+    <form id="waitlist-form">
+      <input type="email" id="email" placeholder="you@example.com" required />
+      <input type="text" id="name" placeholder="First name (optional)" />
+      <select id="city">
+        <option>SF Bay Area</option>
+        <option>Los Angeles</option>
+        <option>New York City</option>
+      </select>
+      <button type="submit" class="cta-btn">Get Early Access</button>
+    </form>
+
+    <div id="success" class="hidden">
+      <p id="queue-copy">You’re on the list! 🎉</p>
+      <div class="share-row">
+        <input type="text" id="share-link" readonly />
+        <button id="copy-btn">Copy link</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section id="faq" class="faq">
+    <h2>FAQ</h2>
+    <details>
+      <summary>Is this iOS only?</summary>
+      <p>Yes, we’re launching on iOS first. Android will follow soon.</p>
+    </details>
+    <details>
+      <summary>Why invite-only?</summary>
+      <p>We want to build the best experience with our first 100 VIP users.</p>
+    </details>
+    <details>
+      <summary>How do I move up the waitlist?</summary>
+      <p>Share your referral link — each friend signed up boosts your rank.</p>
+    </details>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <p>© 2025 Clubview</p>
+    <div class="footer-links">
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Contact</a>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
