@@ -2,10 +2,9 @@
 const { MongoClient } = require("mongodb");
 
 const uri = process.env.MONGODB_URI;
-if (!uri) {
-  throw new Error("Missing MONGODB_URI");
-}
+if (!uri) throw new Error("Missing MONGODB_URI");
 
+// Reuse the client across invocations
 let client;
 let clientPromise;
 function getClient() {
@@ -30,24 +29,37 @@ module.exports = async function handler(req, res) {
 
     const db = (await getClient()).db("fomo");
     const col = db.collection("subscribers");
+
+    // Ensure unique index on email
     await col.createIndex({ email: 1 }, { unique: true });
 
-    const r = await col.updateOne(
+    const result = await col.updateOne(
       { email: e },
       {
         $setOnInsert: { email: e, createdAt: new Date() },
-        $set: { name, cityPreference, source },
+        $set: { name, cityPreference, source }
       },
       { upsert: true }
     );
 
-    return res.json({ ok: true, alreadyExisted: r.upsertedCount === 0 });
+    // With modern driver, check upsertedId to know if an insert happened
+    const inserted = !!result.upsertedId;
+
+    return res.json({
+      ok: true,
+      inserted,
+      alreadyExisted: !inserted,
+      // helpful debug (remove later if you want)
+      upsertedId: result.upsertedId ?? null,
+      matchedCount: result.matchedCount,
+      modifiedCount: result.modifiedCount
+    });
   } catch (err) {
     if (err && err.code === 11000) {
-      return res.json({ ok: true, alreadyExisted: true });
+      // Duplicate key – record exists
+      return res.json({ ok: true, inserted: false, alreadyExisted: true, dup: true });
     }
     console.error("Subscribe error:", err);
-    // Surface the real error during debugging only:
     return res.status(500).json({ ok: false, error: err.message || "Server error" });
   }
 };
