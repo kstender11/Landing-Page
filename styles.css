@@ -86,52 +86,85 @@ button:active, .cta-btn:active, .cta-nav:active {
   transform: translateY(1px);
 }
 
-/* ===== Header / Navbar ===== */
+/* ===== Header layout fixes ===== */
 .navbar {
+  /* existing: sticky/top/backdrop/etc is fine */
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: calc(16px + env(safe-area-inset-top)) 16px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.navbar{
   position: sticky;
   top: 0;
-  z-index: 30;
-  width: 100%;
-  backdrop-filter: saturate(180%) blur(16px);
-  -webkit-backdrop-filter: saturate(180%) blur(16px);
-  background: rgba(11,13,16,.5);
-  border-bottom: 1px solid var(--border);
-
-  /* Works with your current HTML (no .container wrapper required) */
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 20px;
+  z-index: 1000;          /* sits above content */
+  width: 100%;            /* prevents 1px jitters */
+  background: rgba(11,13,16,.65);
+  backdrop-filter: saturate(160%) blur(10px);
+  -webkit-backdrop-filter: saturate(160%) blur(10px); /* iOS */
 }
 
-.logo {
-  display: flex;
+.navbar .logo {
+  display: inline-flex;
   align-items: center;
   gap: 10px;
-  color: var(--text);
   font-weight: 700;
-  letter-spacing: .2px;
+  font-size: 20px;
+  flex: 0 0 auto;
 }
-.logo img { width: 28px; height: 28px; display: block; }
-.logo span { font-size: 18px; }
+
+.navbar .logo img {
+  width: 28px; height: 28px; object-fit: contain;
+}
 
 .navbar nav {
   display: flex;
-  gap: 14px;
   align-items: center;
-  flex-wrap: wrap;
+  gap: 22px;
+  margin-left: auto;           /* links to the right on wide screens */
 }
-.navbar nav a {
-  color: var(--muted);
-  padding: 6px 6px;
-  border-radius: 8px;
+
+.navbar a.cta-nav {
+  padding: 10px 16px;
+  border-radius: 14px;
+  background: var(--cta-bg, #9fe9e5);  /* your mint color */
+  color: #0b0f14;
+  font-weight: 700;
+  line-height: 1;
+  border: 1px solid rgba(255,255,255,0.12);
 }
-.navbar nav a:hover { color: var(--text); }
-.navbar .cta-nav {
-  color: #081417;
-  background: var(--accent);
-  padding: 10px 14px;
+
+/* —— Mobile layout: two-row header —— */
+@media (max-width: 680px) {
+  .navbar {
+    display: grid;
+    grid-template-columns: 1fr auto;  /* logo | CTA */
+    row-gap: 10px;
+    padding: calc(12px + env(safe-area-inset-top)) 14px 10px;
+  }
+
+  .navbar .logo { grid-column: 1 / 2; }
+  .navbar a.cta-nav {
+    grid-column: 2 / 3;
+    justify-self: end;
+  }
+
+  .navbar nav {
+    grid-column: 1 / -1;      /* full width under the top row */
+    order: 2;
+    justify-content: center;  /* center the text links */
+    gap: 18px;
+    margin-left: 0;           /* override desktop */
+  }
+
+  .navbar .logo img { width: 24px; height: 24px; }
 }
+
+/* Make sure content never hides behind the iOS home bar */
+body { padding-bottom: env(safe-area-inset-bottom); }
+
 
 /* ===== Hero ===== */
 .hero {
