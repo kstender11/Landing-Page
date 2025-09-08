@@ -1,135 +1,157 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>fomo</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>fomo — Find tonight’s vibe. Don’t miss the party.</title>
+  <meta name="description" content="Live heat map of bars & clubs, real-time “busy” signals, and recs that match your vibe." />
+  <link rel="icon" href="/assets/logo.png" />
+  <link rel="stylesheet" href="/styles.css" />
 </head>
+
 <body>
-  <!-- ===== Header ===== -->
+  <!-- ===== Sticky Navbar ===== -->
   <header class="navbar">
-    <div class="logo">
-      <img src="assets/logo.png" alt="fomo Logo" />
+    <a class="logo" href="/">
+      <img src="/assets/logo.png" alt="fomo logo" />
       <span>fomo</span>
-    </div>
-    <nav>
+    </a>
+
+    <nav aria-label="Primary">
       <a href="#about">About</a>
       <a href="#features">Features</a>
       <a href="#faq">FAQ</a>
-      <a href="#waitlist" class="cta-nav">Get Early Access</a>
+      <a class="cta-nav" href="#waitlist">Get Early Access</a>
     </nav>
   </header>
 
-  <!-- ===== Hero (centered) ===== -->
-  <section class="hero">
-    <h1>Find tonight’s vibe.<br>Don’t miss the party.</h1>
-    <p>
-      Live heat map of bars & clubs, real-time “busy” signals, and recs that
-      match your vibe.
-    </p>
+  <!-- ===== Hero ===== -->
+  <main>
+    <section class="hero" id="home" aria-labelledby="hero-title">
+      <div class="container">
+        <h1 id="hero-title">Find tonight’s vibe.<br />Don’t miss the party.</h1>
+        <p>
+          Live heat map of bars & clubs, real-time “busy” signals,
+          and recs that match your vibe.
+        </p>
 
-    <div class="badges">
-      <span>Invite-only</span>
-      <span>First 100 = VIP</span>
-      <span>Launching in SF • LA • NYC</span>
-    </div>
+        <div class="badges" role="list">
+          <span role="listitem">Invite-only</span>
+          <span role="listitem">First 100 = VIP</span>
+          <span role="listitem">Launching in SF • LA • NYC</span>
+        </div>
 
-    <a href="#waitlist" class="cta-btn">Get Early Access</a>
-  </section>
-
-  <!-- ===== Stats ===== -->
-  <section class="stats">
-    <div>
-      <h3 id="usersCount">0</h3>
-      <p>Users Signed Up</p>
-    </div>
-    <div>
-      <h3 id="venuesCount">0</h3>
-      <p>Venues Listed</p>
-    </div>
-  </section>
-
-  <!-- ===== About ===== -->
-  <section id="about" class="about">
-    <h2>What is fomo?</h2>
-    <p>
-      fomo is your nightlife discovery app — see live vibes at bars and clubs,
-      find trending spots, and plan your night with friends. We make sure you
-      never walk into an empty venue again.
-    </p>
-  </section>
-
-  <!-- ===== Features ===== -->
-  <section id="features" class="features">
-    <div class="feature">
-      <h3>Trending Tonight</h3>
-      <p>See where it’s <b>Packed</b> right now with our live nightlife heat map.</p>
-    </div>
-    <div class="feature">
-      <h3>For You</h3>
-      <p>Personalized recommendations from signals + your friends’ spots.</p>
-    </div>
-    <div class="feature">
-      <h3>Plan with Friends</h3>
-      <p>Share plans, track favorites, and never split the group chat again.</p>
-    </div>
-  </section>
-
-  <!-- ===== Waitlist ===== -->
-  <section id="waitlist" class="waitlist">
-    <h2>Join the VIP waitlist</h2>
-    <p>Limited drops weekly. Refer friends to skip the line.</p>
-
-    <form id="waitlist-form">
-      <input type="email" id="email" placeholder="you@example.com" required />
-      <!-- changed: split into first + last, both required -->
-      <input type="text" id="firstName" placeholder="First name" required />
-      <input type="text" id="lastName" placeholder="Last name" required />
-      <select id="city">
-        <option>SF Bay Area</option>
-        <option>Los Angeles</option>
-        <option>New York City</option>
-      </select>
-      <button type="submit" class="cta-btn">Get Early Access</button>
-    </form>
-
-    <div id="success" class="hidden">
-      <p id="queue-copy">You’re on the list! 🎉</p>
-      <div class="share-row">
-        <input type="text" id="share-link" readonly />
-        <button id="copy-btn">Copy link</button>
+        <a class="cta-btn" href="#waitlist" aria-label="Jump to waitlist form">Get Early Access</a>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ===== FAQ ===== -->
-  <section id="faq" class="faq">
-    <h2>FAQ</h2>
-    <details>
-      <summary>Is this iOS only?</summary>
-      <p>Yes, we’re launching on iOS first. Android will follow soon.</p>
-    </details>
-    <details>
-      <summary>Why invite-only?</summary>
-      <p>We want to build the best experience with our first 100 VIP users.</p>
-    </details>
-    <details>
-      <summary>How do I move up the waitlist?</summary>
-      <p>Share your referral link — each friend signed up boosts your rank.</p>
-    </details>
-  </section>
+    <!-- ===== Stats ===== -->
+    <section class="stats" aria-label="Live counters">
+      <div>
+        <h3 id="usersCount">0</h3>
+        <p>Users Signed Up</p>
+      </div>
+      <div>
+        <h3 id="venuesCount">0</h3>
+        <p>Venues Listed</p>
+      </div>
+    </section>
+
+    <!-- ===== About ===== -->
+    <section id="about" class="about">
+      <div class="container">
+        <h2>What is fomo?</h2>
+        <p>
+          fomo is your nightlife discovery app — see live vibes at bars and clubs,
+          find trending spots, and plan your night with friends. We make sure
+          you never walk into an empty venue again.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===== Features ===== -->
+    <section id="features" class="features" aria-label="Features">
+      <div class="feature">
+        <h3>Trending Tonight</h3>
+        <p>See where it’s <strong>Packed</strong> right now with our live nightlife heat map.</p>
+      </div>
+      <div class="feature">
+        <h3>For You</h3>
+        <p>Personalized recommendations from signals, friends, and your vibe.</p>
+      </div>
+      <div class="feature">
+        <h3>Real Signals</h3>
+        <p>Busy levels, queue hints, genre, and crowd — updated continuously.</p>
+      </div>
+    </section>
+
+    <!-- ===== Waitlist ===== -->
+    <section id="waitlist" class="waitlist" aria-labelledby="waitlist-title">
+      <div class="container">
+        <h2 id="waitlist-title">Join the VIP waitlist</h2>
+        <p>Limited drops weekly. Refer friends to skip the line.</p>
+
+        <!-- Form (IDs match your script.js) -->
+        <form id="waitlist-form" novalidate>
+          <input id="email" type="email" name="email" placeholder="Your email" autocomplete="email" required />
+          <input id="name" type="text" name="name" placeholder="Your name" autocomplete="name" required />
+          <select id="city" name="city" required>
+            <option value="" disabled selected>Choose your city</option>
+            <option>SF Bay Area</option>
+            <option>Los Angeles</option>
+            <option>New York City</option>
+            <option>Other</option>
+          </select>
+          <button class="cta-btn" type="submit">Get Early Access</button>
+        </form>
+
+        <!-- Success state (toggled by JS) -->
+        <div id="success" class="hidden" aria-live="polite">
+          <p id="queue-copy"></p>
+          <div class="share-row">
+            <input id="share-link" type="text" readonly />
+            <button id="copy-btn" class="cta-btn" type="button">Copy link</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== FAQ ===== -->
+    <section id="faq" class="faq" aria-labelledby="faq-title">
+      <h2 id="faq-title">FAQ</h2>
+
+      <details>
+        <summary>When are you launching?</summary>
+        <p>Private beta is rolling out city by city. Join the waitlist to get early access.</p>
+      </details>
+
+      <details>
+        <summary>What cities will be supported first?</summary>
+        <p>SF Bay Area, Los Angeles, and New York City — more soon.</p>
+      </details>
+
+      <details>
+        <summary>How do referrals work?</summary>
+        <p>Share your unique link after signing up — each friend bumps you up the list.</p>
+      </details>
+    </section>
+  </main>
 
   <!-- ===== Footer ===== -->
-  <footer class="footer">
-    <p>© 2025 fomo</p>
+  <footer class="footer" role="contentinfo">
     <div class="footer-links">
-      <a href="#">Privacy</a>
-      <a href="#">Terms</a>
-      <a href="#">Contact</a>
+      <a href="#about">About</a>
+      <a href="#features">Features</a>
+      <a href="#faq">FAQ</a>
+      <a href="#waitlist">Get Early Access</a>
     </div>
+    <p style="margin-top:8px;">© <span id="year"></span> fomo</p>
   </footer>
 
-  <script src="script.js"></script>
+  <script>
+    // tiny helper just for the footer year
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+  <script src="/script.js" defer></script>
 </body>
 </html>

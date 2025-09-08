@@ -167,13 +167,15 @@ body { padding-bottom: env(safe-area-inset-bottom); }
 
 
 /* ===== Hero ===== */
+
+/* Push hero content below sticky navbar */
 .hero {
-  text-align: center;
-  padding: 72px 20px 48px;
-  min-height: 60svh; /* more stable than 60vh on iOS */
+  padding: calc(72px + env(safe-area-inset-top)) 20px 48px;
+  min-height: 60svh;
   display: grid;
   place-items: center;
 }
+
 .hero h1 {
   margin: 0 0 12px;
   font-size: clamp(30px, 7.2vw, 64px);
