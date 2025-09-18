@@ -1,6 +1,30 @@
-// --- Stats (unchanged) ---
-const venues = 142;   // update dynamically later
-const users  = 823;   // update dynamically later
+// public/script.js
+
+// --- Stats counters ---
+const FALLBACK_USERS = 0;
+const FALLBACK_VENUES = 1328;
+
+window.addEventListener("DOMContentLoaded", async () => {
+  try {
+    const res = await fetch("/api/stats");
+    const data = await res.json();
+
+    if (!data.ok) throw new Error(data.error || "Bad response");
+
+    animateCounter("usersCount", data.users || FALLBACK_USERS);
+    animateCounter("venuesCount", data.venues || FALLBACK_VENUES);
+    animateCounter("venue-count", data.venues || FALLBACK_VENUES);
+    animateCounter("user-count", data.users || FALLBACK_USERS);
+  } catch (err) {
+    console.error("Failed to load stats:", err);
+
+    // fallback
+    animateCounter("usersCount", FALLBACK_USERS);
+    animateCounter("venuesCount", FALLBACK_VENUES);
+    animateCounter("venue-count", FALLBACK_VENUES);
+    animateCounter("user-count", FALLBACK_USERS);
+  }
+});
 
 function animateCounter(id, target) {
   const el = document.getElementById(id);
@@ -16,14 +40,6 @@ function animateCounter(id, target) {
     el.textContent = Math.floor(count);
   }, 20);
 }
-
-// Kick off counters
-window.addEventListener("DOMContentLoaded", () => {
-  animateCounter("usersCount", users);
-  animateCounter("venuesCount", venues);
-  animateCounter("venue-count", venues);
-  animateCounter("user-count", users);
-});
 
 // --- Waitlist form -> backend (with referrals) ---
 window.addEventListener("DOMContentLoaded", () => {
