@@ -51,72 +51,109 @@ window.addEventListener("DOMContentLoaded", () => {
   const API       = "/api/subscribe"; // same project → relative
   const REF_FROM_URL = new URLSearchParams(location.search).get("ref") || null;
 
-  if (!form) return;
+  if (form) {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+      const email     = document.getElementById("email").value.trim();
+      const firstName = (document.getElementById("firstName")?.value || "").trim();
+      const lastName  = (document.getElementById("lastName")?.value || "").trim();
+      const city      = (document.getElementById("city")?.value || "").trim();
+      const submitBtn = form.querySelector('button[type="submit"]');
 
-    const email     = document.getElementById("email").value.trim();
-    const firstName = (document.getElementById("firstName")?.value || "").trim();
-    const lastName  = (document.getElementById("lastName")?.value || "").trim();
-    const city      = (document.getElementById("city")?.value || "").trim();
-    const submitBtn = form.querySelector('button[type="submit"]');
+      if (!email) {
+        alert("Please enter an email.");
+        return;
+      }
+      if (!firstName || !lastName) {
+        alert("Please enter your first and last name.");
+        return;
+      }
 
-    if (!email) {
-      alert("Please enter an email.");
-      return;
-    }
-    if (!firstName || !lastName) {
-      alert("Please enter your first and last name.");
-      return;
-    }
+      if (submitBtn) submitBtn.disabled = true;
 
-    if (submitBtn) submitBtn.disabled = true;
+      try {
+        const res = await fetch(API, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email,
+            firstName,
+            lastName,
+            name: `${firstName} ${lastName}`,
+            cityPreference: city,
+            source: "waitlist",
+            referrerCode: REF_FROM_URL || undefined
+          })
+        });
 
-    try {
-      const res = await fetch(API, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email,
-          firstName,
-          lastName,
-          name: `${firstName} ${lastName}`,
-          cityPreference: city,
-          source: "waitlist",
-          referrerCode: REF_FROM_URL || undefined
-        })
-      });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || !data.ok) throw new Error(data.error || "Request failed");
 
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data.ok) throw new Error(data.error || "Request failed");
+        const inserted       = !!data.inserted;
+        const myCode         = data.referralCode || null;
 
-      const inserted       = !!data.inserted;
-      const alreadyExisted = !!data.alreadyExisted;
-      const myCode         = data.referralCode || null;
+        // UI (same look/feel), using *real* referral code from server:
+        const ref = myCode || Math.random().toString(36).substring(2, 8);
+        form.classList.add("hidden");
+        success.classList.remove("hidden");
+        queueCopy.textContent = inserted
+          ? `You’re on the list, ${firstName}! Share your link to climb the waitlist.`
+          : `You’re already on the list, ${firstName}! Share your link to climb the waitlist.`;
+        shareLink.value = `${window.location.origin}?ref=${ref}`;
 
-      // UI (same look/feel), using *real* referral code from server:
-      const ref = myCode || Math.random().toString(36).substring(2, 8);
-      form.classList.add("hidden");
-      success.classList.remove("hidden");
-      queueCopy.textContent = inserted
-        ? `You’re on the list, ${firstName}! Share your link to climb the waitlist.`
-        : `You’re already on the list, ${firstName}! Share your link to climb the waitlist.`;
-      shareLink.value = `${window.location.origin}?ref=${ref}`;
+        console.log("Subscribe response:", data);
+      } catch (err) {
+        console.error("Subscribe error:", err);
+        alert("Sorry, something went wrong adding you to the waitlist. Please try again.");
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
+      }
+    });
 
-      console.log("Subscribe response:", data);
-    } catch (err) {
-      console.error("Subscribe error:", err);
-      alert("Sorry, something went wrong adding you to the waitlist. Please try again.");
-    } finally {
-      if (submitBtn) submitBtn.disabled = false;
-    }
-  });
+    // --- Copy button with modern clipboard API ---
+    copyBtn?.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(shareLink.value);
+        copyBtn.textContent = "Copied!";
+      } catch (err) {
+        console.error("Clipboard error:", err);
+        // fallback
+        shareLink.select();
+        document.execCommand("copy");
+        copyBtn.textContent = "Copied!";
+      }
+      setTimeout(() => (copyBtn.textContent = "Copy link"), 1500);
+    });
+  }
 
-  copyBtn?.addEventListener("click", () => {
-    shareLink.select();
-    document.execCommand("copy");
-    copyBtn.textContent = "Copied!";
-    setTimeout(() => (copyBtn.textContent = "Copy link"), 1500);
-  });
+  // --- Referral lookup for already signed up users ---
+  const lookupBtn = document.getElementById("lookup-btn");
+  if (lookupBtn) {
+    lookupBtn.addEventListener("click", async () => {
+      const email = document.getElementById("lookup-email").value.trim();
+      if (!email) return alert("Please enter your email");
+
+      try {
+        const res = await fetch("/api/lookup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email })
+        });
+        const data = await res.json();
+
+        if (data.ok && data.found) {
+          const link = `${window.location.origin}?ref=${data.referralCode}`;
+          document.getElementById("lookup-result").textContent =
+            `Your referral link: ${link}`;
+        } else {
+          document.getElementById("lookup-result").textContent =
+            "No referral code found. Try signing up again.";
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Error looking up referral code.");
+      }
+    });
+  }
 });
