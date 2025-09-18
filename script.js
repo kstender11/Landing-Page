@@ -165,16 +165,17 @@ if (lookupBtn) {
   });
 
   // Copy button
-  lookupCopyBtn?.addEventListener("click", async () => {
-    try {
-      await navigator.clipboard.writeText(lookupLink.value);
-      lookupCopyBtn.textContent = "Copied!";
-    } catch {
-      lookupLink.select();
-      document.execCommand("copy");
-      lookupCopyBtn.textContent = "Copied!";
-    }
-    setTimeout(() => (lookupCopyBtn.textContent = "Copy"), 1500);
-  });
+    lookupCopyBtn?.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(lookupLink.value);
+        lookupCopyBtn.textContent = "✅";
+      } catch {
+        lookupLink.select();
+        document.execCommand("copy");
+        lookupCopyBtn.textContent = "✅";
+      }
+      setTimeout(() => (lookupCopyBtn.textContent = "📋"), 1500);
+    });
+
   }
 });

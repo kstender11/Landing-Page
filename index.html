@@ -117,16 +117,20 @@
         </div>
 
         <!-- 🔑 Referral lookup for existing users -->
-        <div id="lookup">
-          <p>Already signed up? Find your referral link here:</p>
-          <input type="email" id="lookup-email" placeholder="Enter your email" />
-          <button id="lookup-btn" class="cta-btn" type="button">Get my link</button>
+        <div id="lookup" class="lookup">
+          <p class="lookup-title">Already signed up? Find your referral link here:</p>
+          <div class="lookup-form">
+            <input type="email" id="lookup-email" placeholder="Enter your email" />
+            <button id="lookup-btn" class="cta-btn" type="button">Get my link</button>
+          </div>
 
-          <!-- new styled result -->
+          <!-- styled result -->
           <div id="lookup-result" class="hidden">
             <div class="share-row">
               <input id="lookup-link" type="text" readonly />
-              <button id="lookup-copy-btn" class="cta-btn" type="button">Copy</button>
+              <button id="lookup-copy-btn" class="icon-btn" type="button" aria-label="Copy referral link">
+                📋
+              </button>
             </div>
             <p id="lookup-message" style="margin-top:8px;"></p>
           </div>
