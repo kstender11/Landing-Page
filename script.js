@@ -128,32 +128,53 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   // --- Referral lookup for already signed up users ---
-  const lookupBtn = document.getElementById("lookup-btn");
-  if (lookupBtn) {
-    lookupBtn.addEventListener("click", async () => {
-      const email = document.getElementById("lookup-email").value.trim();
-      if (!email) return alert("Please enter your email");
+  // --- Referral lookup for already signed up users ---
+const lookupBtn = document.getElementById("lookup-btn");
+if (lookupBtn) {
+  const lookupResult  = document.getElementById("lookup-result");
+  const lookupLink    = document.getElementById("lookup-link");
+  const lookupMessage = document.getElementById("lookup-message");
+  const lookupCopyBtn = document.getElementById("lookup-copy-btn");
 
-      try {
-        const res = await fetch("/api/lookup", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email })
-        });
-        const data = await res.json();
+  lookupBtn.addEventListener("click", async () => {
+    const email = document.getElementById("lookup-email").value.trim();
+    if (!email) return alert("Please enter your email");
 
-        if (data.ok && data.found) {
-          const link = `${window.location.origin}?ref=${data.referralCode}`;
-          document.getElementById("lookup-result").textContent =
-            `Your referral link: ${link}`;
-        } else {
-          document.getElementById("lookup-result").textContent =
-            "No referral code found. Try signing up again.";
-        }
-      } catch (err) {
-        console.error(err);
-        alert("Error looking up referral code.");
+    try {
+      const res = await fetch("/api/lookup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email })
+      });
+      const data = await res.json();
+
+      if (data.ok && data.found) {
+        const link = `${window.location.origin}?ref=${data.referralCode}`;
+        lookupLink.value = link;
+        lookupMessage.textContent = "Share your referral link with friends!";
+      } else {
+        lookupLink.value = "";
+        lookupMessage.textContent = "No referral code found. Try signing up again.";
       }
-    });
+
+      lookupResult.classList.remove("hidden");
+    } catch (err) {
+      console.error(err);
+      alert("Error looking up referral code.");
+    }
+  });
+
+  // Copy button
+  lookupCopyBtn?.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(lookupLink.value);
+      lookupCopyBtn.textContent = "Copied!";
+    } catch {
+      lookupLink.select();
+      document.execCommand("copy");
+      lookupCopyBtn.textContent = "Copied!";
+    }
+    setTimeout(() => (lookupCopyBtn.textContent = "Copy"), 1500);
+  });
   }
 });

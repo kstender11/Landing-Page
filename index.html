@@ -121,7 +121,15 @@
           <p>Already signed up? Find your referral link here:</p>
           <input type="email" id="lookup-email" placeholder="Enter your email" />
           <button id="lookup-btn" class="cta-btn" type="button">Get my link</button>
-          <p id="lookup-result"></p>
+
+          <!-- new styled result -->
+          <div id="lookup-result" class="hidden">
+            <div class="share-row">
+              <input id="lookup-link" type="text" readonly />
+              <button id="lookup-copy-btn" class="cta-btn" type="button">Copy</button>
+            </div>
+            <p id="lookup-message" style="margin-top:8px;"></p>
+          </div>
         </div>
       </div>
     </section>
